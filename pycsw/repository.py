@@ -30,7 +30,10 @@
 
 import logging
 import os
-from sqlalchemy import create_engine, asc, desc, func, __version__, select
+from sqlalchemy import (
+    create_engine, asc, desc, func, __version__, select, Table, MetaData,
+    PrimaryKeyConstraint
+)
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import create_session
 from pycsw import util
@@ -53,16 +56,20 @@ class Repository(object):
 
         engine = create_engine('%s' % database, echo=False)
 
-        base = declarative_base(bind=engine)
+        myMetadata = MetaData()
+        myTable = Table(table, myMetadata, autoload=True, autoload_with=engine)
+        myTable.append_constraint(PrimaryKeyConstraint('id'))
+
+        base = declarative_base()
 
         LOGGER.debug('binding ORM to existing database')
 
-        self.dataset = type('dataset', (base,),
-        dict(__tablename__=table,__table_args__={'autoload': True}))
+        self.dataset = type('dataset', (base,), dict(__table__=myTable))
 
         self.dbtype = engine.name
 
         self.session = create_session(engine)
+
 
         # check if PostgreSQL is enabled with PostGIS
         if self.dbtype == 'postgresql':
