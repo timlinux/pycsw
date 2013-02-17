@@ -267,9 +267,10 @@ def _get_spatial_operator(geomattr, element, dbtype, nsmap):
             st_geomfromtext('%s'), %f)" % \
                 (geomattr, geometry.wkt, float(distance))
         else:
-            spatial_query = "st_%s(st_geomfromtext(%s), \
-            st_geomfromtext('%s'))" % \
-                (spatial_predicate, geomattr, geometry.wkt)
+            spatial_query = (
+                "st_{0}(spatial_coverage, st_geomfromtext('{1}',4326))".format(
+                    spatial_predicate, geometry.wkt)
+            )
     else:
         LOGGER.debug('Adjusting spatial query')
         spatial_query = "query_spatial(%s,'%s','%s','%s')" % \
