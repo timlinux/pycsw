@@ -173,12 +173,9 @@ class Geometry(object):
             raise RuntimeError('Invalid gml:Envelope geometry. \
             gml:lowerCorner and gml:upperCorner must hold at least x and y')
 
-        if self.crs.axisorder == 'yx':
-            self.wkt = util.bbox2wktpolygon('%s,%s,%s,%s' % (llmin[1],
-                                            llmin[0], urmax[1], urmax[0]))
-        else:
-            self.wkt = util.bbox2wktpolygon('%s,%s,%s,%s' % (llmin[0],
-                                            llmin[1], urmax[0], urmax[1]))
+        # forced lon/lat order (xy), postgis expects this
+        self.wkt = util.bbox2wktpolygon(
+            '%s,%s,%s,%s' % (llmin[0], llmin[1], urmax[0], urmax[1]))
 
     def transform(self, src, dest):
         """transform coordinates from one CRS to another"""
