@@ -119,7 +119,7 @@ PACKAGE_DATA.update(get_package_data([ROOT_PACKAGE], 'schemas'))
 INSTALL_REQUIRES = [
     'lxml==2.2.8',
     'Shapely==1.2.16',
-    'pyproj==1.9.2',
+    'pyproj==1.9.3',
     'OWSLib==0.6.1'
 ]
 
